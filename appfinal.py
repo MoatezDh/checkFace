@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, url_for
 from flask_cors import CORS  # Import CORS to enable cross-origin requests
 import cv2
 from deepface import DeepFace
@@ -16,6 +16,7 @@ CORS(app)  # Allow all origins by default
 reference_image_path = os.path.join(os.path.dirname(__file__), 'chawki.jpg')
 
 # Configure logging
+logging.basicConfig(level=logging.INFO)
 
 @app.route('/facerecognition', methods=['POST'])  # Define the route for face recognition
 def face_recognition():
@@ -47,12 +48,27 @@ def face_recognition():
             response_message = "Not You!"
 
     except Exception as e:
+        logging.error(f"Error in face recognition: {e}")
+        logging.debug(traceback.format_exc())
         return jsonify({"message": "Face recognition failed"}), 500
 
     return jsonify({"face_recognition_result": result['verified'], "message": response_message}), 200
 
-# Error handler for unhandled routes
+@app.route('/endpoints', methods=['GET'])  # Define an endpoint to list all routes
+def list_endpoints():
+    output = []
+    for rule in app.url_map.iter_rules():
+        output.append({
+            "endpoint": rule.endpoint,
+            "methods": list(rule.methods),
+            "url": url_for(rule.endpoint, **(rule.defaults or {}))
+        })
+    return jsonify({"endpoints": output}), 200
 
+# Error handler for unhandled routes
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"error": "Page not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)  # Run the app in debug mode for development
