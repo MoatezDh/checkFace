@@ -20,12 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-
-      - name: Install Distutils
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-distutils
+          python-version: '3.11'
 
       - name: Create and start virtual environment
         run: |
@@ -55,7 +50,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -66,12 +61,13 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E0EAEC81A687438DBBA7B70DFDAF6BF0 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B578CC2AE6BF45A68E288A631BB1A8EE }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_99732AD586C14DA389229F9C2CD3AE1C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_03568E01775043529A1971A3128EE180 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C696373144FF444C90768716C6DC40E5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_444249E1EE6D4AFAB09A942E040079C5 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
@@ -79,3 +75,4 @@ jobs:
         with:
           app-name: 'facechecker'
           slot-name: 'Production'
+          
