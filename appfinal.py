@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
+from flask_cors import CORS  # Import CORS
 import cv2
 from deepface import DeepFace
 from datetime import datetime
@@ -10,6 +11,7 @@ import traceback
 
 # Initialize Flask app and configure it
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes and origins
 api = Api(app)
 
 # Define path to the reference image
@@ -65,4 +67,4 @@ def not_found(e):
     return {"message": "Resource not found"}, 404
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003)
+    app.run(debug=True)
